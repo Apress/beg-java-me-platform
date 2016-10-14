@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MVDData version="1.3">
+    <DesignDocument designVersion="MIDP-2" uidCounter="8">
+        <DesignComponent id="$MobileDevice" typeid="MIDP:$MobileDevice" uid="0"/>
+        <DesignComponent id="$StartPoint" typeid="MIDP:$StartPoint" uid="1">
+            <Property name="targetDisplayable" value="mainForm"/>
+            <Property name="targetForwardDisplayable"/>
+        </DesignComponent>
+        <DesignComponent id="mainForm" typeid="MIDP:javax.microedition.lcdui.Form" uid="2">
+            <Property name="title" value="STRING:Custom Item Demo"/>
+            <ContainerProperty name="commands">
+                <ContainerPropertyItem value="$CommandAction1"/>
+            </ContainerProperty>
+            <ContainerProperty name="items">
+                <ContainerPropertyItem value="textField1"/>
+                <ContainerPropertyItem value="customItem1"/>
+                <ContainerPropertyItem value="textField2"/>
+            </ContainerProperty>
+        </DesignComponent>
+        <DesignComponent id="customItem1" typeid="MIDP:example.customitem.Table" uid="3">
+            <Property name="%%1_1_title" value="Table"/>
+            <Property name="%%1_2_d" value="Display.getDisplay(this)"/>
+            <Property name="label" value="STRING:Table"/>
+            <ContainerProperty name="commands"/>
+        </DesignComponent>
+        <DesignComponent id="exitCommand" typeid="MIDP:javax.microedition.lcdui.Command" uid="4">
+            <Property name="label" value="STRING:Exit"/>
+            <Property name="priority" value="1"/>
+            <Property name="type" value="EXIT"/>
+        </DesignComponent>
+        <DesignComponent id="$CommandAction1" typeid="MIDP:CommandAction" uid="5">
+            <Property name="targetDisplayable" value="$MobileDevice"/>
+            <Property name="targetForwardDisplayable"/>
+            <Property name="actionSource" value="exitCommand"/>
+            <Property name="actionOrigin" value="mainForm"/>
+        </DesignComponent>
+        <DesignComponent id="textField1" typeid="MIDP:javax.microedition.lcdui.TextField" uid="6">
+            <Property name="label" value="STRING:Upper Item"/>
+            <Property name="maxSize" value="10"/>
+            <ContainerProperty name="commands"/>
+        </DesignComponent>
+        <DesignComponent id="textField2" typeid="MIDP:javax.microedition.lcdui.TextField" uid="7">
+            <Property name="label" value="STRING:Lower Item"/>
+            <Property name="maxSize" value="10"/>
+            <ContainerProperty name="commands"/>
+        </DesignComponent>
+    </DesignDocument>
+    <FlowDocument version="1.1">
+        <Node id="$MobileDevice" location="125,175" order=",$StartPoint,,,,,,,,,$ExitPoint,,,,,"/>
+        <Node id="mainForm" location="376,312" order="$CommandAction1,,,,,,,,,,$Default,,,,,"/>
+        <Link id="$StartPoint$ActionLink" path="165,151,274,151,274,288,336,288"/>
+        <Link id="$CommandAction1$ActionLink" path="416,304,461,304,461,221,12,221,12,151,85,151"/>
+    </FlowDocument>
+</MVDData>

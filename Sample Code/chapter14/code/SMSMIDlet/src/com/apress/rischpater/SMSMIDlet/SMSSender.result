@@ -1,0 +1,54 @@
+package com.apress.rischpater.SMSMIDlet;
+
+import javax.microedition.io.*; 
+import javax.wireless.messaging.*; 
+import java.io.IOException;
+ 
+public class SMSSender implements Runnable { 
+    private static SMSSender me = new SMSSender(); 
+    private String receiver = null; 
+    private String port = null; 
+    private String msgString = null; 
+    private boolean sending = false; 
+
+    private SMSSender() { 
+    }
+
+    public static SMSSender getInstance() { 
+        return me; 
+    } 
+
+    public boolean isSending() {
+        return sending;
+    }
+    
+    public void sendMsg(String rcvr, String p, String msgText) {
+        if (sending) return; 
+        receiver = rcvr; 
+        port = p;
+        msgString = msgText; 
+        Thread t = new Thread(this); 
+        t.start(); 
+    }
+ 
+    public void run() { 
+        String address = "sms://" + receiver + ":" + port;
+        sending = true; 
+        MessageConnection c = null; 
+        try { 
+            c = (MessageConnection) Connector.open(address); 
+            TextMessage txtmessage = (TextMessage) c.newMessage( 
+            MessageConnection.TEXT_MESSAGE); 
+            txtmessage.setAddress(address); 
+            txtmessage.setPayloadText(msgString); 
+            c.send(txtmessage); 
+        } catch (Exception e) {}
+ 
+        if (c != null) { 
+            try { 
+                c.close(); 
+            } catch (IOException ioe) {} 
+        }
+        sending = false; 
+    } 
+} 

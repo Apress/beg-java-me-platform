@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MVDData version="1.3">
+    <DesignDocument designVersion="MIDP-2" uidCounter="11">
+        <DesignComponent id="$MobileDevice" typeid="MIDP:$MobileDevice" uid="0"/>
+        <DesignComponent id="$StartPoint" typeid="MIDP:$StartPoint" uid="1">
+            <Property name="targetDisplayable" value="mainForm"/>
+            <Property name="targetForwardDisplayable"/>
+        </DesignComponent>
+        <DesignComponent id="mainForm" typeid="MIDP:javax.microedition.lcdui.Form" uid="2">
+            <Property name="title" value="STRING:Alert Options"/>
+            <ContainerProperty name="commands">
+                <ContainerPropertyItem value="$CommandAction1"/>
+                <ContainerPropertyItem value="$CommandAction2"/>
+            </ContainerProperty>
+            <ContainerProperty name="items">
+                <ContainerPropertyItem value="typeGroup"/>
+                <ContainerPropertyItem value="timeoutGroup"/>
+                <ContainerPropertyItem value="optionsGroup"/>
+            </ContainerProperty>
+        </DesignComponent>
+        <DesignComponent id="typeGroup" typeid="MIDP:javax.microedition.lcdui.ChoiceGroup" uid="3">
+            <Property name="label" value="STRING:Type"/>
+            <Property name="choiceType" value="POPUP"/>
+            <ContainerProperty name="commands"/>
+            <ContainerProperty name="elements"/>
+        </DesignComponent>
+        <DesignComponent id="timeoutGroup" typeid="MIDP:javax.microedition.lcdui.ChoiceGroup" uid="4">
+            <Property name="label" value="STRING:Timeout"/>
+            <Property name="choiceType" value="POPUP"/>
+            <ContainerProperty name="commands"/>
+            <ContainerProperty name="elements"/>
+        </DesignComponent>
+        <DesignComponent id="optionsGroup" typeid="MIDP:javax.microedition.lcdui.ChoiceGroup" uid="5">
+            <Property name="label" value="STRING:Options"/>
+            <Property name="choiceType" value="MULTIPLE"/>
+            <ContainerProperty name="commands"/>
+            <ContainerProperty name="elements"/>
+        </DesignComponent>
+        <DesignComponent id="alert" typeid="MIDP:javax.microedition.lcdui.Alert" uid="6">
+            <Property name="title" value="STRING:Alert"/>
+            <ContainerProperty name="commands"/>
+            <Property name="timeout" value="-2"/>
+            <Property name="type" value="INFO"/>
+            <Property name="image"/>
+        </DesignComponent>
+        <DesignComponent id="showCommand" typeid="MIDP:javax.microedition.lcdui.Command" uid="7">
+            <Property name="label" value="STRING:Show"/>
+            <Property name="priority" value="1"/>
+            <Property name="type" value="OK"/>
+        </DesignComponent>
+        <DesignComponent id="$CommandAction1" typeid="MIDP:CommandAction" uid="8">
+            <Property name="targetDisplayable" value="alert"/>
+            <Property name="targetForwardDisplayable" value="mainForm"/>
+            <Property name="actionSource" value="showCommand"/>
+            <Property name="actionOrigin" value="mainForm"/>
+        </DesignComponent>
+        <DesignComponent id="exitCommand" typeid="MIDP:javax.microedition.lcdui.Command" uid="9">
+            <Property name="label" value="STRING:Exit"/>
+            <Property name="priority" value="1"/>
+            <Property name="type" value="EXIT"/>
+        </DesignComponent>
+        <DesignComponent id="$CommandAction2" typeid="MIDP:CommandAction" uid="10">
+            <Property name="targetDisplayable" value="$MobileDevice"/>
+            <Property name="targetForwardDisplayable"/>
+            <Property name="actionSource" value="exitCommand"/>
+            <Property name="actionOrigin" value="mainForm"/>
+        </DesignComponent>
+    </DesignDocument>
+    <FlowDocument version="1.1">
+        <Node id="$MobileDevice" location="125,175" order=",$StartPoint,,,,,,,,,$ExitPoint,,,,,"/>
+        <Node id="alert" location="112,368" order=",,,,$CommandAction1$Output,$CommandAction1$Input,,,,,$Default,,,,,"/>
+        <Node id="mainForm" location="360,192" order="$CommandAction1,$CommandAction2,,,,,,,,,$Default,,,,,"/>
+        <Link id="$StartPoint$ActionLink" path="165,151,266,151,266,168,320,168"/>
+        <Link id="$CommandAction1$ActionLink" path="400,184,452,184,452,229,120,229,120,296"/>
+        <Link id="$CommandAction2$ActionLink" path="400,168,452,168,452,95,12,95,12,151,85,151"/>
+        <Link id="$CommandAction1$ForwardLink" path="136,296,136,213,266,213,266,168,320,168"/>
+    </FlowDocument>
+</MVDData>

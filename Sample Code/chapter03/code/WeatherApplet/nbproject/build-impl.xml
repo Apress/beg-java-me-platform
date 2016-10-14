@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*** GENERATED FROM project.xml - DO NOT EDIT  ***
+***         EDIT ../build.xml INSTEAD         ***
+
+For the purpose of easier reading the script
+is divided into following sections:
+
+  - initialization
+  - compilation
+  - jar
+  - execution
+  - debugging
+  - javadoc
+  - junit compilation
+  - junit execution
+  - junit debugging
+  - applet
+  - cleanup
+
+-->
+<project name="WeatherApplet-impl" default="default" basedir=".." xmlns:cdcproject1="http://www.netbeans.org/ns/cdc-project/1">
+    <import file="build-target-impl.xml"/>
+    <target name="default" depends="jar,javadoc" description="Build whole project."/>
+    <!-- 
+    ======================
+    INITIALIZATION SECTION 
+    ======================
+    -->
+    <target name="-pre-init">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="-init-private" depends="-pre-init">
+        <property file="nbproject/private/private.properties"/>
+        <property name="application.version" value="0.0.1"/>
+        <property name="application.version.counter" value="000002"/>
+    </target>
+    <target name="-init-user" depends="-pre-init,-init-private">
+        <property file="${user.properties.file}"/>
+        <!-- The two properties below are usually overridden -->
+        <!-- by the active platform. Just a fallback. -->
+        <property name="default.javac.source" value="1.2"/>
+        <property name="default.javac.target" value="1.2"/>
+    </target>
+    <target name="-init-project" depends="-pre-init,-init-private,-init-user">
+        <property file="nbproject/project.properties"/>
+    </target>
+    <target name="-do-init" depends="-pre-init,-init-private,-init-user,-init-project,-init-macrodef-property">
+        <cdcproject1:property name="platform.home" value="platforms.${platform.active}.home"/>
+        <cdcproject1:property name="platform.type" value="platforms.${platform.active}.type"/>
+        <cdcproject1:property name="platform.java.tmp" value="platforms.${platform.active}.java"/>
+        <condition property="platform.java" value="${platform.epoc}">
+            <equals arg1="${platform.java.tmp}" arg2="$${platforms.${platform.active}.java}"/>
+        </condition>
+        <property name="platform.java" value="${platform.java.tmp}"/>
+        <path id="platform.bootclasspath.temp" path="${platform.bootclasspath}"/>
+        <path id="platform.home.temp" path="${platform.home}"/>
+        <pathconvert property="platform.home.reg" refid="platform.home.temp">
+            <filtermapper>
+                <replacestring from="\" to="/"/>
+            </filtermapper>
+        </pathconvert>
+        <pathconvert property="platform.bootcp" refid="platform.bootclasspath.temp">
+            <mapper type="regexp" from="\$\{platform\.home\}(.*)" to="${platform.home.reg}\1"/>
+        </pathconvert>
+        <fail unless="platform.home">Must set platform.home</fail>
+        <fail unless="platform.bootcp">Must set platform.bootcp</fail>
+        <fail unless="platform.java">Must set platform.java</fail>
+        <available file="${manifest.file}" property="manifest.available"/>
+        <condition property="manifest.available+main.class+fat.jar">
+            <and>
+                <isset property="manifest.available"/>
+                <isset property="main.class"/>
+                <istrue value="${platform.fat.jar}"/>
+                <not>
+                    <equals arg1="${main.class}" arg2="" trim="true"/>
+                </not>
+            </and>
+        </condition>
+        <condition property="manifest.available+main.class">
+            <and>
+                <isset property="manifest.available"/>
+                <isset property="main.class"/>
+                <isfalse value="${platform.fat.jar}"/>
+                <not>
+                    <equals arg1="${main.class}" arg2="" trim="true"/>
+                </not>
+            </and>
+        </condition>
+        <condition property="application.version.invalid" value="true">
+            <equals arg1="${application.version}" arg2="" trim="true"/>
+        </condition>
+        <fail if="application.version.invalid" message="Property application.version must not be empty and must contain version in format %d.%d.%d!"/>
+        <condition property="have.tests">
+            <or>
+                <available file="${test.src.dir}"/>
+            </or>
+        </condition>
+        <condition property="netbeans.home+have.tests">
+            <and>
+                <isset property="netbeans.home"/>
+                <isset property="have.tests"/>
+            </and>
+        </condition>
+        <condition property="no.javadoc.preview">
+            <isfalse value="${javadoc.preview}"/>
+        </condition>
+        <property name="run.jvmargs" value=""/>
+        <property name="javac.compilerargs" value=""/>
+        <property name="work.dir" value="${basedir}"/>
+        <condition property="no.deps">
+            <and>
+                <istrue value="${no.dependencies}"/>
+            </and>
+        </condition>
+        <condition property="application.version.autoincrement.set">
+            <istrue value="${application.version.autoincrement}"/>
+        </condition>
+    </target>
+    <target name="-post-init">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="-init-check" depends="-pre-init,-init-private,-init-user,-init-project,-do-init">
+        <fail unless="src.dir">Must set src.dir</fail>
+        <fail unless="test.src.dir">Must set test.src.dir</fail>
+        <fail unless="build.dir">Must set build.dir</fail>
+        <fail unless="dist.dir">Must set dist.dir</fail>
+        <fail unless="build.classes.dir">Must set build.classes.dir</fail>
+        <fail unless="dist.javadoc.dir">Must set dist.javadoc.dir</fail>
+        <fail unless="build.test.classes.dir">Must set build.test.classes.dir</fail>
+        <fail unless="build.test.results.dir">Must set build.test.results.dir</fail>
+        <fail unless="build.classes.excludes">Must set build.classes.excludes</fail>
+        <fail unless="dist.jar">Must set dist.jar</fail>
+    </target>
+    <target name="-init-macrodef-property">
+        <macrodef name="property" uri="http://www.netbeans.org/ns/cdc-project/1">
+            <attribute name="name"/>
+            <attribute name="value"/>
+            <sequential>
+                <property name="@{name}" value="${@{value}}"/>
+            </sequential>
+        </macrodef>
+    </target>
+    <target name="-init-macrodef-javac">
+        <macrodef name="javac" uri="http://www.netbeans.org/ns/cdc-project/1">
+            <attribute name="srcdir" default="${src.dir}"/>
+            <attribute name="destdir" default="${build.classes.dir}"/>
+            <attribute name="classpath" default="${javac.classpath}"/>
+            <attribute name="debug" default="${javac.debug}"/>
+            <element name="customize" optional="true"/>
+            <sequential>
+                <javac srcdir="@{srcdir}" destdir="@{destdir}" debug="@{debug}" deprecation="${javac.deprecation}" source="${javac.source}" target="${javac.target}" bootclasspath="${platform.bootcp}" tempdir="${java.io.tmpdir}" includeantruntime="false">
+                    <classpath>
+                        <path path="@{classpath}"/>
+                    </classpath>
+                    <compilerarg line="${javac.compilerargs}"/>
+                    <customize/>
+                </javac>
+            </sequential>
+        </macrodef>
+    </target>
+    <target name="-init-macrodef-junit">
+        <macrodef name="" uri="http://www.netbeans.org/ns/cdc-project/1">
+            <attribute name="includes" default="**/*Test.java"/>
+            <sequential>
+                <junit showoutput="true" fork="true" dir="${basedir}" failureproperty="tests.failed" errorproperty="tests.failed" jvm="${platform.java}">
+                    <batchtest todir="${build.test.results.dir}">
+                        <fileset dir="${test.src.dir}" includes="@{includes}"/>
+                    </batchtest>
+                    <classpath>
+                        <path path="${run.test.classpath}"/>
+                    </classpath>
+                    <syspropertyset>
+                        <propertyref prefix="test-sys-prop."/>
+                        <mapper type="glob" from="test-sys-prop.*" to="*"/>
+                    </syspropertyset>
+                    <formatter type="brief" usefile="false"/>
+                </junit>
+            </sequential>
+        </macrodef>
+    </target>
+    <target name="-init-macrodef-nbjpda">
+        <macrodef name="nbjpdastart" uri="http://www.netbeans.org/ns/cdc-project/1">
+            <attribute name="name" default="${main.class}"/>
+            <attribute name="classpath" default="${debug.classpath}"/>
+            <attribute name="stopclassname" default=""/>
+            <sequential>
+                <nbjpdastart transport="dt_socket" addressproperty="jpda.address" name="@{name}" stopclassname="@{stopclassname}">
+                    <classpath>
+                        <path path="@{classpath}"/>
+                    </classpath>
+                    <bootclasspath>
+                        <path path="${platform.bootcp}"/>
+                    </bootclasspath>
+                </nbjpdastart>
+            </sequential>
+        </macrodef>
+        <macrodef name="nbjpdareload" uri="http://www.netbeans.org/ns/cdc-project/1">
+            <attribute name="dir" default="${build.classes.dir}"/>
+            <sequential>
+                <nbjpdareload>
+                    <fileset includes="${fix.includes}*.class" dir="@{dir}"/>
+                </nbjpdareload>
+            </sequential>
+        </macrodef>
+    </target>
+    <target name="-init-macrodef-debug">
+        <macrodef name="debug" uri="http://www.netbeans.org/ns/cdc-project/1">
+            <attribute name="classname" default="${main.class}"/>
+            <attribute name="classpath" default="${debug.classpath}"/>
+            <element name="customize" optional="true"/>
+            <sequential>
+                <java fork="true" classname="@{classname}" dir="${work.dir}" jvm="${platform.java}">
+                    <jvmarg value="-Xdebug"/>
+                    <jvmarg value="-Xrunjdwp:transport=dt_socket,address=${jpda.address}"/>
+                    <jvmarg line="${run.jvmargs}"/>
+                    <classpath>
+                        <path path="@{classpath}"/>
+                    </classpath>
+                    <syspropertyset>
+                        <propertyref prefix="run-sys-prop."/>
+                        <mapper type="glob" from="run-sys-prop.*" to="*"/>
+                    </syspropertyset>
+                    <customize/>
+                </java>
+            </sequential>
+        </macrodef>
+    </target>
+    <target name="-init-macrodef-java">
+        <macrodef name="java" uri="http://www.netbeans.org/ns/cdc-project/1">
+            <attribute name="classname" default="${main.class}"/>
+            <element name="customize" optional="true"/>
+            <sequential>
+                <java fork="true" classname="@{classname}" dir="${work.dir}" jvm="${platform.java}">
+                    <jvmarg line="${run.jvmargs}"/>
+                    <classpath>
+                        <path path="${run.classpath}"/>
+                    </classpath>
+                    <syspropertyset>
+                        <propertyref prefix="run-sys-prop."/>
+                        <mapper type="glob" from="run-sys-prop.*" to="*"/>
+                    </syspropertyset>
+                    <customize/>
+                </java>
+            </sequential>
+        </macrodef>
+    </target>
+    <target name="-init-presetdef-jar">
+        <presetdef name="jar" uri="http://www.netbeans.org/ns/cdc-project/1">
+            <jar jarfile="${dist.jar}" compress="${jar.compress}">
+                <cdcproject1:fileset dir="${build.classes.dir}"/>
+            </jar>
+        </presetdef>
+    </target>
+    <target name="init" depends="-pre-init,-init-private,-init-user,-init-project,-do-init,-post-init,-init-check,-init-macrodef-property,-init-macrodef-javac,-init-macrodef-junit,-init-macrodef-nbjpda,-init-macrodef-debug,-init-macrodef-java,-init-presetdef-jar"/>
+    <!--                
+    ===================
+    COMPILATION SECTION
+    ===================
+    -->
+    <target name="deps-jar" depends="init" unless="no.deps"/>
+    <target name="-pre-pre-compile" depends="init,deps-jar">
+        <mkdir dir="${build.classes.dir}"/>
+    </target>
+    <target name="-pre-compile">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="-do-compile" depends="init,deps-jar,-pre-pre-compile,-pre-compile">
+        <cdcproject1:javac/>
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${src.dir}" excludes="${build.classes.excludes}"/>
+        </copy>
+    </target>
+    <target name="-post-compile">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="compile" depends="init,deps-jar,-pre-pre-compile,-pre-compile,-do-compile,-post-compile" description="Compile project."/>
+    <target name="-pre-compile-single">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="-do-compile-single" depends="init,deps-jar,-pre-pre-compile">
+        <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
+        <cdcproject1:javac>
+            <customize>
+                <patternset includes="${javac.includes}"/>
+            </customize>
+        </cdcproject1:javac>
+    </target>
+    <target name="-post-compile-single">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="compile-single" depends="init,deps-jar,-pre-pre-compile,-pre-compile-single,-do-compile-single,-post-compile-single"/>
+    <!--
+    ====================
+    JAR BUILDING SECTION
+    ====================
+    -->
+    <target name="-pre-pre-jar" depends="init">
+        <dirname property="dist.jar.dir" file="${dist.jar}"/>
+        <mkdir dir="${dist.jar.dir}"/>
+    </target>
+    <target name="-pre-jar">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="-do-jar-without-manifest" depends="init,compile,-pre-pre-jar,-pre-jar" unless="manifest.available">
+        <cdcproject1:jar/>
+    </target>
+    <target name="-do-jar-with-libraries-in-one-jar" depends="init,compile,-pre-pre-jar,-pre-jar" if="manifest.available+main.class+fat.jar">
+        <property name="build.classes.dir.resolved" location="${build.classes.dir}"/>
+        <pathconvert property="run.classpath.without.build.classes.dir">
+            <path path="${run.classpath}"/>
+            <map from="${build.classes.dir.resolved}" to=""/>
+        </pathconvert>
+        <pathconvert property="jar.classpath" pathsep=" ">
+            <path path="${run.classpath.without.build.classes.dir}"/>
+            <chainedmapper>
+                <flattenmapper/>
+                <globmapper from="*" to="*"/>
+            </chainedmapper>
+        </pathconvert>
+        <property name="build.classes.dir.tmp" value="${build.dir}/tmp"/>
+        <property name="build.classes.dir.libs" value="${build.dir}/libs"/>
+        <mkdir dir="${build.classes.dir.tmp}"/>
+        <mkdir dir="${build.classes.dir.libs}"/>
+        <copy todir="${build.classes.dir.tmp}">
+            <fileset dir="${build.classes.dir}"/>
+        </copy>
+        <taskdef classname="org.netbeans.modules.j2me.cdc.project.FatCopyLibs" name="fatcopylibs-cdc" classpath="${libs.cdc-utils.classpath}"/>
+        <fatcopylibs-cdc destfolder="${build.classes.dir.libs}" runtimeclasspath="${run.classpath.without.build.classes.dir}"/>
+        <unjar dest="${build.classes.dir.tmp}">
+            <fileset dir="${build.classes.dir.libs}"/>
+        </unjar>
+        <jar manifest="${manifest.file}" jarfile="${dist.jar}" compress="${jar.compress}">
+            <fileset dir="${build.classes.dir.tmp}"/>
+        </jar>
+        <delete dir="${build.classes.dir.libs}"/>
+        <delete dir="${build.classes.dir.tmp}"/>
+        <pathconvert property="run.classpath.with.dist.jar" pathsep=" ">
+            <path path="${dist.jar}"/>
+        </pathconvert>
+    </target>
+    <target name="-do-jar-with-libraries" depends="init,compile,-pre-pre-jar,-pre-jar" if="manifest.available+main.class">
+        <property name="build.classes.dir.resolved" location="${build.classes.dir}"/>
+        <pathconvert property="run.classpath.without.build.classes.dir">
+            <path path="${run.classpath}"/>
+            <map from="${build.classes.dir.resolved}" to=""/>
+        </pathconvert>
+        <pathconvert property="jar.classpath" pathsep=" ">
+            <path path="${run.classpath.without.build.classes.dir}"/>
+            <chainedmapper>
+                <flattenmapper/>
+                <globmapper from="*" to="lib/*"/>
+            </chainedmapper>
+        </pathconvert>
+        <cdccopylibs manifest="${manifest.file}" runtimeclasspath="${run.classpath.without.build.classes.dir}" jarfile="${dist.jar}" compress="${jar.compress}">
+            <fileset dir="${build.classes.dir}"/>
+        </cdccopylibs>
+        <fileset dir="${dist.dir}" id="dist.dir.lib">
+            <include name="**/*"/>
+        </fileset>
+        <pathconvert property="run.classpath.with.dist.jar" refid="dist.dir.lib"/>
+    </target>
+    <target name="-post-jar">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="jar" depends="init,compile,-pre-jar,-do-jar-without-manifest,-do-jar-with-libraries,-do-jar-with-libraries-in-one-jar,-post-jar" description="Build JAR."/>
+    <!--
+    ===============
+    JAVADOC SECTION
+    ===============
+    -->
+    <target name="-javadoc-build" depends="init">
+        <mkdir dir="${dist.javadoc.dir}"/>
+        <condition property="javadoc.notree.opt" value="-notree">
+            <istrue value="${javadoc.notree}"/>
+        </condition>
+        <property name="javadoc.notree.opt" value=""/>
+        <condition property="javadoc.use.opt" value="-use">
+            <istrue value="${javadoc.use}"/>
+        </condition>
+        <property name="javadoc.use.opt" value=""/>
+        <condition property="javadoc.nonavbar.opt" value="-nonavbar">
+            <istrue value="${javadoc.nonavbar}"/>
+        </condition>
+        <property name="javadoc.nonavbar.opt" value=""/>
+        <condition property="javadoc.noindex.opt" value="-noindex">
+            <istrue value="${javadoc.noindex}"/>
+        </condition>
+        <property name="javadoc.noindex.opt" value=""/>
+        <condition property="javadoc.splitindex.opt" value="-splitindex">
+            <istrue value="${javadoc.splitindex}"/>
+        </condition>
+        <property name="javadoc.splitindex.opt" value=""/>
+        <condition property="javadoc.author.opt" value="-author">
+            <istrue value="${javadoc.author}"/>
+        </condition>
+        <property name="javadoc.author.opt" value=""/>
+        <condition property="javadoc.version.opt" value="-version">
+            <istrue value="${javadoc.version}"/>
+        </condition>
+        <property name="javadoc.version.opt" value=""/>
+        <condition property="javadoc.private.opt" value="-private">
+            <istrue value="${javadoc.private}"/>
+        </condition>
+        <property name="javadoc.private.opt" value=""/>
+        <condition property="javadoc.classpath.opt" value="&quot;&quot;">
+            <equals arg1="${javac.classpath}" arg2=""/>
+        </condition>
+        <path id="javadoc.classpath.temp">
+            <pathelement path="${javac.classpath}"/>
+        </path>
+        <property name="javadoc.classpath.opt" refid="javadoc.classpath.temp"/>
+        <javadoc source="${javac.source}" destdir="${dist.javadoc.dir}" bootclasspath="${platform.bootcp}" notree="${javadoc.notree}" use="${javadoc.use}" nonavbar="${javadoc.nonavbar}" noindex="${javadoc.noindex}" splitindex="${javadoc.splitindex}" author="${javadoc.author}" version="${javadoc.version}" windowtitle="${javadoc.windowtitle}" private="${javadoc.private}">
+            <classpath>
+                <path path="${javadoc.classpath.opt}"/>
+            </classpath>
+            <sourcepath>
+                <pathelement location="${src.dir}"/>
+            </sourcepath>
+            <fileset dir="${src.dir}"/>
+        </javadoc>
+    </target>
+    <target name="-javadoc-browse" depends="init,-javadoc-build" if="netbeans.home" unless="no.javadoc.preview">
+        <nbbrowse file="${dist.javadoc.dir}/index.html"/>
+    </target>
+    <target name="javadoc" depends="init,-javadoc-build,-javadoc-browse" description="Build Javadoc."/>
+    <!--
+    =========================
+    JUNIT COMPILATION SECTION
+    =========================
+    -->
+    <target name="-pre-pre-compile-test" depends="init,compile" if="have.tests">
+        <mkdir dir="${build.test.classes.dir}"/>
+    </target>
+    <target name="-pre-compile-test">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="-do-compile-test" depends="init,compile,-pre-pre-compile-test,-pre-compile-test" if="have.tests">
+        <cdcproject1:javac srcdir="${test.src.dir}" destdir="${build.test.classes.dir}" debug="true" classpath="${javac.test.classpath}"/>
+        <copy todir="${build.test.classes.dir}">
+            <fileset dir="${test.src.dir}" excludes="**/*.java"/>
+        </copy>
+    </target>
+    <target name="-post-compile-test">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="compile-test" depends="init,compile,-pre-pre-compile-test,-pre-compile-test,-do-compile-test,-post-compile-test"/>
+    <target name="-pre-compile-test-single">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="-do-compile-test-single" depends="init,compile,-pre-pre-compile-test,-pre-compile-test-single" if="have.tests">
+        <fail unless="javac.includes">Must select some files in the IDE or set javac.includes</fail>
+        <cdcproject1:javac srcdir="${test.src.dir}" destdir="${build.test.classes.dir}" debug="true" classpath="${javac.test.classpath}">
+            <customize>
+                <patternset includes="${javac.includes}"/>
+            </customize>
+        </cdcproject1:javac>
+    </target>
+    <target name="-post-compile-test-single">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="compile-test-single" depends="init,compile,-pre-pre-compile-test,-pre-compile-test-single,-do-compile-test-single,-post-compile-test-single"/>
+    <!--
+    =======================
+    JUNIT JAR SECTION
+    =======================
+    -->
+    <target name="-pre-pre-test-jar" depends="init">
+        <dirname property="dist.jar.dir" file="${dist.jar}"/>
+        <mkdir dir="${dist.jar.dir}"/>
+    </target>
+    <target name="-pre-test-jar">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="-do-test-jar" depends="init,compile,-pre-pre-test-jar,-pre-test-jar">
+        <!-- Void target because it is not needed for fat jar. -->
+    </target>
+    <target name="-do-one-jar-with-test-libraries" depends="init,compile,-pre-pre-test-jar,-pre-test-jar" if="manifest.available+main.class+fat.jar">
+        <property name="test.classes.dir.resolved" location="${build.test.classes.dir}"/>
+        <property name="run.classes.dir.resolved" location="${build.classes.dir}"/>
+        <pathconvert property="test.classpath.without.build.test.classes.dir">
+            <path path="${run.test.classpath}"/>
+            <map from="${test.classes.dir.resolved}" to=""/>
+        </pathconvert>
+        <pathconvert property="test.classpath.without.build.classes.dir">
+            <path path="${test.classpath.without.build.test.classes.dir}"/>
+            <map from="${run.classes.dir.resolved}" to=""/>
+        </pathconvert>
+        <property name="build.classes.dir.tmp" value="${build.dir}/tmp"/>
+        <property name="build.classes.dir.libs" value="${build.dir}/libs"/>
+        <mkdir dir="${build.classes.dir.tmp}"/>
+        <mkdir dir="${build.classes.dir.libs}"/>
+        <copy todir="${build.classes.dir.tmp}">
+            <fileset dir="${build.classes.dir}"/>
+            <fileset dir="${build.test.classes.dir}"/>
+        </copy>
+        <taskdef classname="org.netbeans.modules.j2me.cdc.project.FatCopyLibs" name="fatcopylibs-cdc" classpath="${libs.cdc-utils.classpath}"/>
+        <fatcopylibs-cdc destfolder="${build.classes.dir.libs}" runtimeclasspath="${test.classpath.without.build.classes.dir}"/>
+        <unjar dest="${build.classes.dir.tmp}">
+            <fileset dir="${build.classes.dir.libs}"/>
+        </unjar>
+        <jar manifest="${manifest.file}" jarfile="${dist.jar}" compress="${jar.compress}">
+            <fileset dir="${build.classes.dir.tmp}"/>
+        </jar>
+        <delete dir="${build.classes.dir.libs}"/>
+        <delete dir="${build.classes.dir.tmp}"/>
+        <pathconvert property="run.classpath.with.dist.jar" pathsep=" ">
+            <path path="${dist.jar}"/>
+        </pathconvert>
+    </target>
+    <target name="-do-jar-with-test-libraries" depends="init,compile,-pre-pre-jar,-pre-jar" if="manifest.available+main.class">
+        <property name="test.classes.dir.resolved" location="${build.test.classes.dir}"/>
+        <property name="run.classes.dir.resolved" location="${build.classes.dir}"/>
+        <pathconvert property="test.classpath.without.build.test.classes.dir">
+            <path path="${run.test.classpath}"/>
+            <map from="${test.classes.dir.resolved}" to=""/>
+        </pathconvert>
+        <pathconvert property="test.classpath.without.build.classes.dir">
+            <path path="${test.classpath.without.build.test.classes.dir}"/>
+            <map from="${run.classes.dir.resolved}" to=""/>
+        </pathconvert>
+        <cdccopylibs manifest="${manifest.file}" runtimeclasspath="${test.classpath.without.build.classes.dir}" jarfile="${dist.jar}" compress="${jar.compress}">
+            <fileset dir="${build.classes.dir}"/>
+        </cdccopylibs>
+        <fileset dir="${dist.dir}" id="dist.dir.lib">
+            <include name="**/*"/>
+        </fileset>
+        <pathconvert property="run.classpath.with.dist.jar" refid="dist.dir.lib"/>
+    </target>
+    <target name="-post-test-jar">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="test-jar" depends="init,compile,compile-test,-pre-test-jar,-do-test-jar,-do-one-jar-with-test-libraries,-do-jar-with-test-libraries,-post-test-jar" description="Build test JAR."/>
+    <!--
+    ===============
+    CLEANUP SECTION
+    ===============
+    -->
+    <target name="deps-clean" depends="init" unless="no.deps"/>
+    <target name="-do-java-clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+    <target name="-post-clean">
+        <!-- Empty placeholder for easier customization. -->
+        <!-- You can override this target in the ../build.xml file. -->
+    </target>
+    <target name="clean" depends="init,deps-clean,-do-java-clean,-do-clean,-post-clean" description="Clean build products."/>
+    <!--
+    ===============
+    DEBUG HELPER SECTION
+    ===============
+    -->
+    <target name="nbdebug" if="netbeans.home" description="Starts NetBeans debugger">
+        <property name="debug.period" value="10000"/>
+        <property name="debug.timeout" value="60000"/>
+        <emudebug address="${jpda.port}" name="${application.name}" stopclass="${main.class}" timeout="${debug.timeout}" period="${debug.period}">
+            <bootclasspath>
+                <path path="${platform.bootcp}"/>
+            </bootclasspath>
+            <classpath>
+                <path path="${dist.jar}"/>
+            </classpath>
+            <sourcepath>
+                <path path="${src.dir}"/>
+                <path path="${libs.src.path}"/>
+            </sourcepath>
+        </emudebug>
+    </target>
+</project>

@@ -1,0 +1,165 @@
+/*
+ * ContactStuffer.java
+ *
+ * Created on March 28, 2008, 9:03 PM
+ */
+
+package com.apress.rischpater;
+
+import javax.microedition.midlet.*;
+import javax.microedition.lcdui.*;
+import java.io.*; 
+import java.util.*;
+import javax.microedition.pim.*;
+/**
+ *
+ * @author kf6gpe
+ */
+public class ContactStuffer extends MIDlet implements CommandListener {
+    
+    public ContactStuffer() {
+        try { 
+            verifyPIMSupport(); 
+            seed(); 
+        } 
+        catch (Exception ex) { 
+            Form mForm = new Form("Exception"); 
+            mForm.append(new StringItem(null, ex.toString())); 
+            Command mExitCommand = new Command("Exit", Command.EXIT, 0);
+            mForm.addCommand(mExitCommand); 
+            mForm.setCommandListener(this); 
+            return; 
+        }      
+    }
+    
+    private Form helloForm;
+    private StringItem helloStringItem;
+    private Command exitCommand;
+    private List listContacts;
+    private Command okCommand1;
+
+    private void initialize() {
+        getDisplay().setCurrent(get_helloForm());
+    }
+    
+    public void commandAction(Command command, Displayable displayable) {
+        if (displayable == helloForm) {
+            if (command == exitCommand) {
+                exitMIDlet();
+            } else if (command == okCommand1) {
+                getDisplay().setCurrent(get_listContacts());
+            }
+        }
+    }
+    
+    public Display getDisplay() {
+        return Display.getDisplay(this);
+    }
+    
+   public void exitMIDlet() {
+        getDisplay().setCurrent(null);
+        destroyApp(true);
+        notifyDestroyed();
+    }
+    
+    public Form get_helloForm() {
+        if (helloForm == null) {
+            helloForm = new Form(null, new Item[] {get_helloStringItem()});
+            helloForm.addCommand(get_exitCommand());
+            helloForm.addCommand(get_okCommand1());
+            helloForm.setCommandListener(this);
+        }
+        return helloForm;
+    }
+    
+    public StringItem get_helloStringItem() {
+        if (helloStringItem == null) {
+            helloStringItem = new StringItem("", "");
+        }
+        return helloStringItem;
+    }
+
+    public Command get_exitCommand() {
+        if (exitCommand == null) {
+            exitCommand = new Command("Exit", Command.EXIT, 1);
+        }
+        return exitCommand;
+    }
+
+    public List get_listContacts() {
+        if (listContacts == null) {
+            listContacts = new List(null, Choice.IMPLICIT, 
+                new String[0], new Image[0]);
+            listContacts.setCommandListener(this);
+            listContacts.setSelectedFlags(new boolean[0]);
+            ContactLoaderThread t = new ContactLoaderThread(listContacts);
+            t.start();
+        }
+        return listContacts;
+    }
+
+    public Command get_okCommand1() {
+        if (okCommand1 == null) {
+            okCommand1 = new Command("Ok", Command.OK, 1);
+        }
+        return okCommand1;
+    }
+    
+    public void startApp() {
+        initialize();
+    }
+    
+    public void pauseApp() {
+    }
+    
+    public void destroyApp(boolean unconditional) {
+    }
+    
+    public void verifyPIMSupport() throws IOException { 
+        String version = ""; 
+        version = System.getProperty("microedition.pim.version"); 
+        if (version != null) { 
+          if (!version.equals("1.0")) 
+            throw new IOException("Package is not version 1.0."); 
+        } 
+        else 
+          throw new IOException("PIM optional package is not available.");
+    }
+   
+    private ContactList list = null; 
+  
+    private void seed() throws PIMException { 
+        try { 
+            PIM pimInst = PIM.getInstance(); 
+            list = (ContactList) 
+            pimInst.openPIMList(PIM.CONTACT_LIST, PIM.READ_WRITE); 
+        } 
+        catch (PIMException ex) { /* Contact list is not supported. */ } 
+        addContact(list, "Ray", "Rischpater", "1234 High Street", 
+            "Los Gatos", "USA", "95030"); 
+        addContact(list, "John", "Doe", "1111 Bear Road", 
+            "Mariposa", "USA", "9????"); 
+        if (list != null) 
+            list.close(); 
+        list = null; 
+    } 
+
+    private void addContact( ContactList list, String firstName, 
+                            String lastName, String street, String city,
+                            String country, String postalcode) 
+    throws PIMException { 
+        Contact c = list.createContact(); 
+        String [] name = new String[list.stringArraySize(Contact.NAME)]; 
+        name[Contact.NAME_GIVEN] = firstName; 
+        name[Contact.NAME_FAMILY] = lastName; 
+        c.addStringArray(Contact.NAME,Contact.ATTR_NONE , name); 
+        String [] addr = new String[list.stringArraySize(Contact.ADDR)]; 
+        addr[Contact.ADDR_STREET] = street; 
+        addr[Contact.ADDR_LOCALITY] = city; 
+        addr[Contact.ADDR_COUNTRY] = country; 
+        addr[Contact.ADDR_POSTALCODE] = street; 
+        c.addStringArray(Contact.ADDR, Contact.ATTR_NONE , addr); 
+        c.commit(); 
+    } 
+} 
+

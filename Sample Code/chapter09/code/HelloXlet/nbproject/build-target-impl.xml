@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*** GENERATED FROM project.xml - DO NOT EDIT  ***
+***         EDIT ../build.xml INSTEAD         ***
+
+For the purpose of easier reading the script
+is divided into following sections:
+
+  - initialization
+  - compilation
+  - jar
+  - execution
+  - debugging
+  - javadoc
+  - junit compilation
+  - junit execution
+  - junit debugging
+  - applet
+  - cleanup
+
+-->
+<project name="WeatherApplet-target" default="default" basedir=".." xmlns:cdcproject1="http://www.netbeans.org/ns/cdc-project/1">
+    <target name="default" depends="jar" description="Build whole project.">
+        <echo message=""/>
+    </target>
+    <target name="-do-pre-init-target" depends="init">
+        <property name="savaje.application.uid" value="TBD"/>
+        <condition property="no.application.uid" value="true">
+            <or>
+                <equals arg1="${savaje.application.uid}" arg2="" trim="true"/>
+                <contains string="${savaje.application.uid}" substring="$${savaje.application.uid"/>
+            </or>
+        </condition>
+        <condition property="savaje.bundle.base.invalid" value="true">
+            <or>
+                <equals arg1="${savaje.bundle.base}" arg2="" trim="true"/>
+                <contains string="${savaje.bundle.base}" substring="$${savaje.bundle.base"/>
+            </or>
+        </condition>
+        <condition property="savaje.unsupported.main" value="true">
+            <or>
+                <equals arg1="${main.class.applet}" arg2="true"/>
+            </or>
+        </condition>
+    </target>
+    <target name="-do-init-target" depends="-do-pre-init-target, jar">
+        <property name="savaje.application.uid" value="TBD"/>
+        <property name="application.description" value="TBD"/>
+        <condition property="no.application.uid" value="true">
+            <or>
+                <equals arg1="${savaje.application.uid}" arg2="" trim="true"/>
+                <contains string="${savaje.application.uid}" substring="$${savaje.application.uid"/>
+            </or>
+        </condition>
+        <condition property="icon.invalid" value="true">
+            <or>
+                <isset property="no.application.uid"/>
+                <contains string="${savaje.application.icon}" substring="$${"/>
+                <equals arg1="${savaje.application.icon}" arg2="" trim="true"/>
+            </or>
+        </condition>
+        <property name="jnlp.dist" value="${build.dir}/jnlp/bundle.jnlp"/>
+    </target>
+    <target name="-prepare-icon" depends="-do-init-target" unless="icon.invalid">
+        <pathconvert property="savaje.application.icon.name" pathsep=" ">
+            <path path="${savaje.application.icon}"/>
+            <chainedmapper>
+                <flattenmapper/>
+                <globmapper from="*" to="*"/>
+            </chainedmapper>
+        </pathconvert>
+    </target>
+    <target name="-build-jnlp" depends="-do-init-target, -prepare-icon" unless="no.application.uid">
+        <mkdir dir="${build.dir}/jnlp/"/>
+        <jnlp dir="${build.dir}/jnlp/" file="bundle.jnlp" codebase="WeatherApplet" distjar="lib/${dist.jar.name}" applicationicon="lib/${savaje.application.icon.name}" smallicon="${savaje.application.icon.small}" focusedicon="${savaje.application.icon.focused}" applicationtitle="${application.name}" applicationvendor="${application.vendor}" applicationDescription="${application.description}" applicationArgs="${application.args}" mainClass="${main.class}" debug="${savaje.bundle.debug}" debugport="${savaje.bundle.debug.port}">
+            <fileset dir="${dist.dir}/lib"/>
+        </jnlp>
+    </target>
+    <target name="-build-policy" depends="-do-init-target" unless="no.application.uid">
+        <policy file="${build.dir}/jnlp/bundle.policy" codebase="WeatherApplet"/>
+    </target>
+    <target name="-update-app-version" if="application.version.autoincrement.set" unless="no.application.uid">
+        <propertyfile file="nbproject/private/private.properties">
+            <entry key="application.version.counter" type="int" operation="+" default="2" pattern="000000"/>
+            <entry key="application.version" value="${application.version.counter}"/>
+        </propertyfile>
+        <property name="application.version.pattern" value="\2\3.\5\6.\8\9"/>
+        <replaceregexp byline="true" file="nbproject/private/private.properties" match="^application.version=[0-9]*(0|([1-9]))([0-9])(0|([1-9]))([0-9])(0|([1-9]))([0-9])$" replace="application.version=${application.version.pattern}"/>
+    </target>
+    <target name="-create-target" unless="no.application.uid">
+        <mkdir dir="${target.dir}\lib"/>
+        <copy todir="${target.dir}\lib" overwrite="true" failonerror="false">
+            <fileset dir="${dist.dir}\lib">
+                <exclude name="javadoc/**"/>
+            </fileset>
+        </copy>
+        <copy tofile="${target.dir}\lib\classes.jar" file="${dist.jar}" overwrite="true"/>
+        <copy todir="${target.dir}" file="${build.dir}/jnlp/bundle.jnlp" overwrite="true"/>
+        <copy tofile="${target.dir}/bundle.policy" file="${build.dir}/jnlp/bundle.policy" overwrite="true"/>
+        <copy todir="${target.dir}\lib" overwrite="true">
+            <fileset dir="${resources.dir}"/>
+        </copy>
+    </target>
+    <target name="-copy-icon" unless="icon.invalid">
+        <copy tofile="${target.dir}\lib\${savaje.application.icon.name}" file="${savaje.application.icon}" overwrite="true" failonerror="false"/>
+    </target>
+    <target name="build-target" depends="-do-init-target, -build-jnlp, -build-policy, -update-app-version, -create-target, -copy-icon" unless="no.application.uid"/>
+    <target name="deploy-target" depends="-do-init-target, build-target" unless="no.application.uid">
+        <fail if="savaje.unsupported.main" message="The main method execution is not supported by SavaJe device!"/>
+        <fail if="savaje.bundle.base.invalid" message="Target drive is not specified!"/>
+        <property name="bundle.dir" value="${savaje.bundle.base}\savaJe\bundles\WeatherApplet"/>
+        <delete dir="${bundle.dir}"/>
+        <mkdir dir="${bundle.dir}\lib"/>
+        <copy todir="${bundle.dir}" overwrite="true">
+            <fileset dir="${target.dir}"/>
+        </copy>
+    </target>
+    <!--
+            =================
+            PREPARATION FOR EXECUTION SECTION
+            =================
+            -->
+    <target name="-run-prepare" depends="-do-init-target, -build-jnlp, -build-policy" unless="no.application.uid" description="Prepare log folders, copy necessary files"/>
+    <!--
+            =================
+            EXECUTION SECTION
+            =================
+            -->
+    <target name="run" depends="-do-init-target, -run-prepare" unless="no.application.uid">
+        <sunEmulatorExec home="${platform.home}" mainclass="${main.class}" args="${application.args}" jvmargs="${run.jvmargs}" device="${platform.device}" profile="${platform.profile}" xlet="${main.class.xlet}" applet="${main.class.applet}">
+            <fileset dir="${dist.dir}">
+                <exclude name="javadoc/**"/>
+            </fileset>
+        </sunEmulatorExec>
+    </target>
+    <!--
+            =======================
+            DEBUGGING SECTION
+            =======================
+            -->
+    <target name="-debug-start-debugger" depends="-do-init-target" unless="no.application.uid">
+        <cdcproject1:nbjpdastart name="${debug.class}"/>
+    </target>
+    <target name="-debug-start-debuggee" depends="-do-init-target, -run-prepare" unless="no.application.uid">
+        <sunEmulatorExec home="${platform.home}" mainclass="${main.class}" args="${application.args}" jvmargs="${run.jvmargs}" device="${platform.device}" profile="${platform.profile}" xlet="${main.class.xlet}" applet="${main.class.applet}" debug="true" debuggeraddressproperty="${jpda.address}">
+            <fileset dir="${dist.dir}">
+                <exclude name="javadoc/**"/>
+            </fileset>
+        </sunEmulatorExec>
+    </target>
+    <target name="debug" depends="-do-init-target,-debug-start-debugger,-debug-start-debuggee" if="netbeans.home" unless="no.application.uid" description="Debug project in IDE."/>
+    <target name="-debug-start-debugger-stepinto" depends="-do-init-target" if="netbeans.home" unless="no.application.uid">
+        <cdcproject1:nbjpdastart stopclassname="${main.class}"/>
+    </target>
+    <target name="debug-stepinto" depends="-do-init-target,-debug-start-debugger-stepinto,-debug-start-debuggee" if="netbeans.home" unless="no.application.uid"/>
+    <!--
+            =======================
+            JUNIT EXECUTION SECTION
+            =======================
+            -->
+    <target name="-pre-test-run" depends="-do-init-target"/>
+    <target name="-do-test-run" depends="-do-init-target, test-jar, -pre-test-run,-run-prepare">
+        <fail>JUnit testing is not supported for this target.</fail>
+    </target>
+    <target name="-post-test-run" depends="-do-init-target" if="have.tests">
+        <fail if="tests.failed">Some tests failed; see details above.</fail>
+    </target>
+    <target name="test-report" depends="-do-init-target"/>
+    <target name="-test-browse" depends="-do-init-target" if="netbeans.home+have.tests"/>
+    <target name="test" depends="-do-init-target,-do-test-run,test-report,-post-test-run,-test-browse" description="Run unit tests."/>
+    <!--
+            =======================
+            CLEAN UP SECTION
+            =======================
+            -->
+    <target name="-do-clean" depends="-do-pre-init-target">
+        <delete dir="${target.dir}"/>
+    </target>
+</project>

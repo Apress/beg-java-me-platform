@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MVDData version="1.3">
+    <DesignDocument designVersion="MIDP-2" uidCounter="9">
+        <DesignComponent id="$MobileDevice" typeid="MIDP:$MobileDevice" uid="0"/>
+        <DesignComponent id="$StartPoint" typeid="MIDP:$StartPoint" uid="1">
+            <Property name="targetDisplayable" value="mainForm"/>
+            <Property name="targetForwardDisplayable"/>
+        </DesignComponent>
+        <DesignComponent id="mainForm" typeid="MIDP:javax.microedition.lcdui.Form" uid="2">
+            <Property name="title" value="STRING:Gauge Demo"/>
+            <ContainerProperty name="commands">
+                <ContainerPropertyItem value="$CommandAction1"/>
+            </ContainerProperty>
+            <ContainerProperty name="items">
+                <ContainerPropertyItem value="interactiveGauge"/>
+                <ContainerPropertyItem value="indefiniteGauge"/>
+                <ContainerPropertyItem value="gauge1"/>
+                <ContainerPropertyItem value="gauge2"/>
+            </ContainerProperty>
+        </DesignComponent>
+        <DesignComponent id="indefiniteGauge" typeid="MIDP:javax.microedition.lcdui.Gauge" uid="3">
+            <Property name="label" value="STRING:Indefinite - Running"/>
+            <Property name="interactive" value="false"/>
+            <Property name="maxValue" value="-1"/>
+            <Property name="value" value="2"/>
+            <Property name="layout" value="16913"/>
+            <ContainerProperty name="commands"/>
+        </DesignComponent>
+        <DesignComponent id="interactiveGauge" typeid="MIDP:javax.microedition.lcdui.Gauge" uid="4">
+            <Property name="label" value="STRING:Interactive"/>
+            <Property name="interactive" value="true"/>
+            <Property name="maxValue" value="10"/>
+            <Property name="value" value="0"/>
+            <Property name="layout" value="16913"/>
+            <ContainerProperty name="commands"/>
+        </DesignComponent>
+        <DesignComponent id="exitCommand" typeid="MIDP:javax.microedition.lcdui.Command" uid="5">
+            <Property name="label" value="STRING:Exit"/>
+            <Property name="priority" value="1"/>
+            <Property name="type" value="EXIT"/>
+        </DesignComponent>
+        <DesignComponent id="$CommandAction1" typeid="MIDP:CommandAction" uid="6">
+            <Property name="targetDisplayable" value="$MobileDevice"/>
+            <Property name="targetForwardDisplayable"/>
+            <Property name="actionSource" value="exitCommand"/>
+            <Property name="actionOrigin" value="mainForm"/>
+        </DesignComponent>
+        <DesignComponent id="gauge1" typeid="MIDP:example.gauge.IncrementalIndefiniteGaugeRunnable" uid="7">
+            <Property name="label" value="STRING:Non Interactive"/>
+            <Property name="interactive" value="false"/>
+            <Property name="maxValue" value="-1"/>
+            <Property name="value" value="1"/>
+            <Property name="layout" value="16897"/>
+            <ContainerProperty name="commands"/>
+        </DesignComponent>
+        <DesignComponent id="gauge2" typeid="MIDP:example.gauge.NonInteractiveGaugeRunnable" uid="8">
+            <Property name="label" value="STRING:Indefinite - Incremental"/>
+            <Property name="interactive" value="false"/>
+            <Property name="maxValue" value="10"/>
+            <Property name="value" value="0"/>
+            <ContainerProperty name="commands"/>
+        </DesignComponent>
+    </DesignDocument>
+    <FlowDocument version="1.1">
+        <Node id="$MobileDevice" location="125,175" order=",$StartPoint,,,,,,,,,$ExitPoint,,,,,"/>
+        <Node id="mainForm" location="320,312" order="$CommandAction1,,,,,,,,,,$Default,,,,,"/>
+        <Link id="$StartPoint$ActionLink" path="165,151,246,151,246,288,280,288"/>
+        <Link id="$CommandAction1$ActionLink" path="360,304,405,304,405,221,12,221,12,151,85,151"/>
+    </FlowDocument>
+</MVDData>

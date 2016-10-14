@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MVDData version="1.3">
+    <DesignDocument designVersion="MIDP-2" uidCounter="10">
+        <DesignComponent id="$MobileDevice" typeid="MIDP:$MobileDevice" uid="0"/>
+        <DesignComponent id="$StartPoint" typeid="MIDP:$StartPoint" uid="1">
+            <Property name="targetDisplayable" value="helloForm"/>
+            <Property name="targetForwardDisplayable"/>
+        </DesignComponent>
+        <DesignComponent id="helloForm" typeid="MIDP:javax.microedition.lcdui.Form" uid="2">
+            <ContainerProperty name="commands">
+                <ContainerPropertyItem value="$CommandAction"/>
+                <ContainerPropertyItem value="$CommandAction1"/>
+            </ContainerProperty>
+            <ContainerProperty name="items">
+                <ContainerPropertyItem value="helloStringItem"/>
+            </ContainerProperty>
+        </DesignComponent>
+        <DesignComponent id="$CommandAction" typeid="MIDP:CommandAction" uid="3">
+            <Property name="targetDisplayable" value="$MobileDevice"/>
+            <Property name="targetForwardDisplayable"/>
+            <Property name="actionSource" value="exitCommand"/>
+            <Property name="actionOrigin" value="helloForm"/>
+        </DesignComponent>
+        <DesignComponent id="helloStringItem" typeid="MIDP:javax.microedition.lcdui.StringItem" uid="4">
+            <Property name="label" value="STRING:"/>
+            <Property name="text" value="STRING:"/>
+            <ContainerProperty name="commands"/>
+        </DesignComponent>
+        <DesignComponent id="exitCommand" typeid="MIDP:javax.microedition.lcdui.Command" uid="5">
+            <Property name="label" value="STRING:Exit"/>
+            <Property name="priority" value="1"/>
+            <Property name="type" value="EXIT"/>
+        </DesignComponent>
+        <DesignComponent id="listContacts" typeid="MIDP:javax.microedition.lcdui.List" uid="6">
+            <Property name="choiceType" value="IMPLICIT"/>
+            <Property name="selectCommandAction" value="$SelectCommandAction1"/>
+            <Property name="indexBasedSwitch" value="true"/>
+            <ContainerProperty name="commands"/>
+            <ContainerProperty name="elements"/>
+        </DesignComponent>
+        <DesignComponent id="$SelectCommandAction1" typeid="MIDP:SelectCommandAction" uid="7">
+            <Property name="targetDisplayable"/>
+            <Property name="targetForwardDisplayable"/>
+            <Property name="actionOrigin" value="listContacts"/>
+        </DesignComponent>
+        <DesignComponent id="okCommand1" typeid="MIDP:javax.microedition.lcdui.Command" uid="8">
+            <Property name="label" value="STRING:Ok"/>
+            <Property name="priority" value="1"/>
+            <Property name="type" value="OK"/>
+        </DesignComponent>
+        <DesignComponent id="$CommandAction1" typeid="MIDP:CommandAction" uid="9">
+            <Property name="targetDisplayable" value="listContacts"/>
+            <Property name="targetForwardDisplayable"/>
+            <Property name="actionSource" value="okCommand1"/>
+            <Property name="actionOrigin" value="helloForm"/>
+        </DesignComponent>
+    </DesignDocument>
+    <FlowDocument version="1.1">
+        <Node id="$MobileDevice" location="160,192" order=",$StartPoint,,,,,,,,,$ExitPoint,,,,,"/>
+        <Node id="helloForm" location="344,192" order="$CommandAction,$CommandAction1,,,,,,,,,$Default,,,,,"/>
+        <Node id="listContacts" location="536,192" order=",,,,,,,,,,$Default,,,,,"/>
+        <Link id="$StartPoint$ActionLink" path="200,168,304,168"/>
+        <Link id="$CommandAction$ActionLink" path="384,184,461,184,461,229,47,229,47,168,120,168"/>
+        <Link id="$CommandAction1$ActionLink" path="384,168,496,168"/>
+    </FlowDocument>
+</MVDData>

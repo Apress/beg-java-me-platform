@@ -1,0 +1,148 @@
+package com.apress.rischpater.MMSMIDlet;
+
+import javax.microedition.midlet.*; 
+import javax.microedition.io.*; 
+import javax.microedition.lcdui.*; 
+import javax.wireless.messaging.*; 
+import java.io.IOException; 
+
+public class MMSMIDlet 
+    extends MIDlet 
+    implements CommandListener, Runnable, MessageListener {
+    private MMSSender sender = null; 
+    private Command exitCommand = new Command("Exit", Command.EXIT, 2); 
+    private Command sendCommand = new Command("Send", Command.SCREEN, 1); 
+    private TextField numberEntry = null;
+    private static final String FRACTAL_PATH = "/icons/fractal.png";
+    private ImageItem imageItem = null;
+    private Form form = null;  
+    private boolean endNow = false; 
+    private MessageConnection c = null;
+    private final String appId = "MMSMIDlet";
+    protected int msgAvail = 0;
+    private final Integer monitor = new Integer(0);
+
+    public MMSMIDlet() { 
+        sender = MMSSender.getInstance(); 
+    } 
+  
+    public void commandAction(javax.microedition.lcdui.Command c, 
+                              javax.microedition.lcdui.Displayable d) { 
+        if (c == exitCommand) { 
+            if (!sender.isSending()) { 
+                destroyApp(true); 
+                notifyDestroyed(); 
+            }
+        } else if (c == sendCommand) { 
+            String dest = numberEntry.getString(); 
+                if (dest.length() > 0) 
+                    sender.sendMsg(dest, appId, "A fractal!", FRACTAL_PATH );
+        }
+    }
+
+    protected void destroyApp(boolean param) { 
+        try { 
+            endNow = true; 
+            c.close();
+        } catch (IOException ex) {} 
+    }
+ 
+    protected void pauseApp() {
+        endNow = true;
+        try { 
+            c.setMessageListener(null);
+            c.close();
+        } catch (IOException ex) {}
+    }
+ 
+    protected void startApp() { 
+        if (form == null) { 
+            form = new Form("MMSMIDlet"); 
+            numberEntry = new TextField("Connect to:", 
+                                         null, 256, 
+                                         TextField.PHONENUMBER); 
+            imageItem = new ImageItem(null,null,
+                    ImageItem.LAYOUT_DEFAULT,null);
+
+            form.append(numberEntry);
+            form.append(imageItem);
+
+            form.addCommand(exitCommand); 
+            form.addCommand(sendCommand); 
+            form.setCommandListener(this); 
+        } 
+        Display.getDisplay(this).setCurrent(form); 
+        startReceive(); 
+    }
+ 
+    private void startReceive() {
+        Thread t; 
+        try { 
+            c = (MessageConnection) Connector.open("mms://:" + appId);
+            c.setMessageListener(this);
+        } catch (Exception e) {} 
+        if (c != null) {
+            t = new Thread(this); 
+            t.start(); 
+        }
+    }
+
+    public void run() { 
+        Message msg = null; 
+        endNow = false; 
+        msgAvail = 0;
+    
+        while (!endNow) { 
+            synchronized(monitor) { 
+                if (msgAvail <= 0)
+                    try { 
+                        monitor.wait();
+                    } catch (InterruptedException e) {}
+                msgAvail--; 
+            }
+            try {
+                msg = c.receive();
+                if (msg instanceof MultipartMessage) { 
+                    MultipartMessage mpm = (MultipartMessage)msg; 
+                    MessagePart[] parts = mpm.getMessageParts(); 
+                    if (parts != null) { 
+                        for (int i = 0; i < parts.length; i++) { 
+                            MessagePart mp = parts[i]; 
+                            String type = mp.getMIMEType();
+                            byte[] ba = mp.getContent(); 
+                            if (type.equals("image/png")) {
+                                Image image =
+                                    Image.createImage(ba, 0, ba.length);
+                                Display.getDisplay(this).callSerially( 
+                                    new SetImage(image)); 
+                            } 
+                        } 
+                    } 
+                } 
+            } catch (Exception e) {} 
+        }
+    } 
+    
+    private void getMessage() {
+        synchronized(monitor) {
+            msgAvail++;
+            monitor.notify();
+        } 
+    } 
+    
+    public void notifyIncomingMessage(MessageConnection msgConn) {
+        if (msgConn != null) {
+            getMessage(); 
+        }
+    } 
+    
+   class SetImage implements Runnable { 
+       private Image img = null; 
+       public SetImage(Image i) { 
+           img = i; 
+       } 
+       public void run() { 
+           imageItem.setImage(img);
+       } 
+   }
+} 
